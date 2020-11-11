@@ -2,7 +2,31 @@ name: $(Date:yyyyMMdd)$(Rev:.r)
 
 
 stages:
-- stage: BuildAndTest
+- stage: DotnetTest
+  jobs:
+  - job: 'Service1'
+    steps:
+      - checkout: self
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: 'Rafal.Bochenski.Service1/'
+  - job: 'Service2'
+    steps:
+      - checkout: self
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: 'Rafal.Bochenski.Service2/'
+  - job: 'Service3'
+    steps:
+      - checkout: self
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: 'Rafal.Bochenski.Service3'
+
+- stage: DockerBuildAndPush
   jobs:
   - job: 'Service1'
     steps:
@@ -18,4 +42,4 @@ stages:
           repository: 'r4fi/alletasks'
           command: 'buildAndPush'
           Dockerfile: '**/Rafal.Bochenski.Service1.Dockerfile'
-          tags: 's1-$(Build.BuildId)'
+          tags: 's1-$(Build.SourceVersion)'
