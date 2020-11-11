@@ -2,7 +2,7 @@ name: $(Date:yyyyMMdd)$(Rev:.r)
 
 
 stages:
-- stage: Build&test
+- stage: BuildAndTest
   jobs:
   - job: 'Service1'
     steps:
