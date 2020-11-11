@@ -9,11 +9,13 @@ pr:
 
 stages:
 - stage: DotnetBuildAndTest
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   jobs:
-  - job: 'Service1'
+  - job: 'AllProjects'
     steps:
       - checkout: self
       - task: DotNetCoreCLI@2
+        displayName: dotnet build
         inputs:
           command: 'build'
           projects: |
@@ -21,22 +23,19 @@ stages:
             Rafal.Bochenski.Service2/Rafal.Bochenski.Service2.csproj
             Rafal.Bochenski.Service3/Rafal.Bochenski.Service3.csproj
       - task: DotNetCoreCLI@2
+        displayName: dotnet test
         inputs:
           command: 'test'
           projects: |
-            Rafal.Bochenski.Service1/
-            Rafal.Bochenski.Service2/
-            Rafal.Bochenski.Service3/
+            Rafal.Bochenski.Service1/Rafal.Bochenski.Service1.csproj
+            Rafal.Bochenski.Service2/Rafal.Bochenski.Service2.csproj
+            Rafal.Bochenski.Service3/Rafal.Bochenski.Service3.csproj
 
 - stage: DockerBuildAndPush
   jobs:
   - job: 'Service1'
     steps:
       - checkout: self
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'test'
-          projects: 'Rafal.Bochenski.Service1/'
       - task: Docker@2
         displayName: docker build
         inputs:
@@ -45,3 +44,25 @@ stages:
           command: 'buildAndPush'
           Dockerfile: '**/Rafal.Bochenski.Service1.Dockerfile'
           tags: 's1-$(Build.SourceVersion)'
+  - job: 'Service2'
+    steps:
+      - checkout: self
+      - task: Docker@2
+        displayName: docker build
+        inputs:
+          containerRegistry: 'DockerHub'
+          repository: 'r4fi/alletasks'
+          command: 'buildAndPush'
+          Dockerfile: '**/Rafal.Bochenski.Service2.Dockerfile'
+          tags: 's2-$(Build.SourceVersion)'
+  - job: 'Service3'
+    steps:
+      - checkout: self
+      - task: Docker@2
+        displayName: docker build
+        inputs:
+          containerRegistry: 'DockerHub'
+          repository: 'r4fi/alletasks'
+          command: 'buildAndPush'
+          Dockerfile: '**/Rafal.Bochenski.Service3.Dockerfile'
+          tags: 's3-$(Build.SourceVersion)'
