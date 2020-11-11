@@ -7,6 +7,10 @@ stages:
   - job: 'Service1'
     steps:
       - checkout: self
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: 'Rafal.Bochenski.Service1/'
       - task: Docker@2
         displayName: docker build
         inputs:
@@ -15,8 +19,3 @@ stages:
           command: 'buildAndPush'
           Dockerfile: '**/Rafal.Bochenski.Service1.Dockerfile'
           tags: 's1-$(Build.BuildId)'
-      - task: CmdLine@2
-        displayName: docker run test
-        inputs:
-          script: |
-            docker run --entrypoint="" r4fi/alletasks:s1-$(Build.BuildId) bash dotnet test
