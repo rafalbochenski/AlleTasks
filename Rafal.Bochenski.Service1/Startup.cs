@@ -36,7 +36,7 @@ namespace Rafal.Bochenski.Service1
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+//            app.UseHttpsRedirection();
 
             app.UseRouting();
 
