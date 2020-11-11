@@ -16,11 +16,17 @@ stages:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'build'
-          projects: 'Rafal.Bochenski.Service1/'
+          projects: |
+            Rafal.Bochenski.Service1/Rafal.Bochenski.Service1.csproj
+            Rafal.Bochenski.Service2/Rafal.Bochenski.Service2.csproj
+            Rafal.Bochenski.Service3/Rafal.Bochenski.Service3.csproj
       - task: DotNetCoreCLI@2
         inputs:
           command: 'test'
-          projects: 'Rafal.Bochenski.Service1/'
+          projects: |
+            Rafal.Bochenski.Service1/
+            Rafal.Bochenski.Service2/
+            Rafal.Bochenski.Service3/
 
 - stage: DockerBuildAndPush
   jobs:
